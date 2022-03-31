@@ -18,11 +18,13 @@ export const reducer = (state: IAppState, action: IAppAction): IAppState => {
         ...state,
         user: action.payload as IUser,
       };
+
     case LOG_OUT:
       return {
         ...state,
         user: null,
       };
+
     case SET_NOTIFICATION:
       return {
         ...state,

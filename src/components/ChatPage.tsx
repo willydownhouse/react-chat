@@ -1,16 +1,24 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { useEffect } from 'react';
 
 import { useStateValue } from '../state/context';
 
 import Message from './Message';
 import { fetchMessages } from '../utils/messages';
+import MessageInput from './MessageInput';
+import { ChatContainer, MsgContainer, PageContainer } from '../styles';
 
 function ChatPage() {
   const { state, dispatch } = useStateValue();
+  const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
+
   useEffect(() => {
     fetchMessages(dispatch);
   }, []);
+
+  useEffect(() => {
+    ref.current.scrollIntoView({ behavior: 'smooth' });
+  }, [state.messages]);
 
   const renderMessages = () => {
     return state.messages.map(msg => {
@@ -19,10 +27,16 @@ function ChatPage() {
   };
 
   return (
-    <div>
-      Chatpage
-      {renderMessages()}
-    </div>
+    <PageContainer>
+      <ChatContainer>
+        <MsgContainer>
+          <>{renderMessages()}</>
+          <div ref={ref}></div>
+        </MsgContainer>
+
+        <MessageInput />
+      </ChatContainer>
+    </PageContainer>
   );
 }
 

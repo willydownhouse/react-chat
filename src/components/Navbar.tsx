@@ -1,28 +1,23 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { LOG_OUT } from '../interfaces';
 import { useStateValue } from '../state/context';
-import { handleAuth } from '../utils/auth';
+import { Nav } from '../styles';
+import { login, logout } from '../utils/auth';
 
 function Navbar() {
   const { state, dispatch } = useStateValue();
 
   return (
-    <div>
-      <Link to="/">Front</Link>
-      <Link to="/chat">Chat</Link>
-      <button
-        onClick={() =>
-          state.user
-            ? dispatch({
-                type: LOG_OUT,
-              })
-            : handleAuth(dispatch)
-        }
-      >
+    <Nav>
+      <div>
+        <Link to="/">Front</Link>
+        <Link to="/chat">Chat</Link>
+      </div>
+
+      <button onClick={() => (state.user ? logout(dispatch) : login(dispatch))}>
         {state.user ? 'Sign out' : 'Sign in'}
       </button>
-    </div>
+    </Nav>
   );
 }
 

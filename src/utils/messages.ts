@@ -15,7 +15,7 @@ export const fetchMessages = async (dispatch: React.Dispatch<IAppAction>) => {
   try {
     const mesRef = collection(db, 'messages');
 
-    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(3));
+    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(10));
 
     const res = await getDocs(q);
 

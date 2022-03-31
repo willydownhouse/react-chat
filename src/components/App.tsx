@@ -3,12 +3,14 @@ import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { initialState, Provider } from '../state/context';
 import { reducer } from '../state/reducer';
-import { handleAuth } from '../utils/auth';
+import { checkIfLoggedIn } from '../utils/auth';
 import ChatPage from './ChatPage';
 import FrontPage from './FrontPage';
-import MessageInput from './MessageInput';
+
 import Navbar from './Navbar';
 import ProtectedRoute from './ProtectedRoute';
+import GlobalStyles from '../styles/global';
+import { AppContainer } from '../styles';
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -17,8 +19,13 @@ function App() {
     console.log('STATE');
     console.log(state);
   }, [state]);
+
+  useEffect(() => {
+    checkIfLoggedIn(dispatch);
+  }, []);
   return (
-    <div>
+    <AppContainer padding="0 10rem">
+      <GlobalStyles />
       <Provider value={{ state, dispatch }}>
         <BrowserRouter>
           <Navbar />
@@ -28,9 +35,8 @@ function App() {
               path="/chat"
               element={
                 <>
-                  <ChatPage />
                   <ProtectedRoute>
-                    <MessageInput />
+                    <ChatPage />
                   </ProtectedRoute>
                 </>
               }
@@ -38,7 +44,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Provider>
-    </div>
+    </AppContainer>
   );
 }
 

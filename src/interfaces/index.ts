@@ -2,12 +2,14 @@ import React from 'react';
 
 export interface IMessage {
   id: string;
+  authorId: string;
   author: string;
   createdAt: string;
   text: string;
 }
 
 export interface IUser {
+  id: string;
   name: string;
   email: string;
   photoURL: string;

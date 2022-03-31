@@ -1,7 +1,8 @@
 import React from 'react';
+import { PageContainer } from '../styles';
 
 function FrontPage() {
-  return <div>FrontPage</div>;
+  return <PageContainer>FrontPage</PageContainer>;
 }
 
 export default FrontPage;

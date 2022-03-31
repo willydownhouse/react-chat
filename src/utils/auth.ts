@@ -9,13 +9,14 @@ import {
   IAppAction,
   IUser,
   LOG_IN,
+  LOG_OUT,
   REMOVE_NOTIFICATION,
   SET_NOTIFICATION,
 } from '../interfaces';
 
 const provider = new FacebookAuthProvider();
 
-export const handleAuth = (dispatch: React.Dispatch<IAppAction>) => {
+export const login = (dispatch: React.Dispatch<IAppAction>) => {
   const auth = getAuth();
   signInWithPopup(auth, provider)
     .then(result => {
@@ -26,9 +27,12 @@ export const handleAuth = (dispatch: React.Dispatch<IAppAction>) => {
       const credential = FacebookAuthProvider.credentialFromResult(result);
       const accessToken = (credential as OAuthCredential).accessToken;
 
-      const { displayName, email, photoURL } = user;
+      console.log(user);
+
+      const { displayName, email, photoURL, uid } = user;
 
       const currentUser: IUser = {
+        id: uid,
         name: displayName as string,
         email: email as string,
         photoURL: photoURL as string,
@@ -65,4 +69,34 @@ export const handleAuth = (dispatch: React.Dispatch<IAppAction>) => {
 
       console.log(error);
     });
+};
+
+export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
+  getAuth().onAuthStateChanged(user => {
+    console.log(user);
+
+    if (!user) return;
+
+    const { displayName, email, photoURL, uid } = user;
+
+    const currentUser: IUser = {
+      id: uid,
+      name: displayName as string,
+      email: email as string,
+      photoURL: photoURL as string,
+    };
+
+    dispatch({
+      type: LOG_IN,
+      payload: currentUser,
+    });
+  });
+};
+
+export const logout = async (dispatch: React.Dispatch<IAppAction>) => {
+  await getAuth().signOut();
+
+  dispatch({
+    type: LOG_OUT,
+  });
 };
