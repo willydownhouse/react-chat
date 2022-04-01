@@ -8,12 +8,16 @@ type ContainerProps = {
 
 export const AppContainer = styled.div<ContainerProps>`
   height: 100vh;
-  padding: ${props => (props.padding ? props.padding : '0')};
   background: #202225;
 
   @media (max-width: 850px) {
     padding: 0 1rem;
   }
+`;
+
+export const ContentWrap = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 4fr 1fr;
 `;
 
 export const PageContainer = styled.div`
@@ -33,19 +37,8 @@ export const MsgContainer = styled.div`
   overflow-y: scroll;
 
   &::-webkit-scrollbar {
-    //display: none;
-    width: 1rem;
-    background-color: yellow;
-    scrollbar-track-color: #111;
+    display: none;
   }
-`;
-
-export const Nav = styled.nav`
-  height: 15vh;
-  background: #202225;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
 `;
 
 export const StyledForm = styled(Form)`
@@ -78,32 +71,4 @@ export const StyledButton = styled.button`
   color: white;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
-`;
-
-interface StyledMsgProps {
-  bg?: string;
-}
-
-export const StyledMsg = styled.div<StyledMsgProps>`
-  width: 100%;
-  min-height: 6rem;
-  padding: 1rem 3rem;
-  background-color: #36393f;
-  margin-bottom: 2rem;
-  border-radius: 5px;
-`;
-
-export const Flex = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  margin-bottom: 1rem;
-`;
-
-export const Name = styled.h2`
-  margin-right: 3rem;
-`;
-
-export const Msg = styled.h4`
-  font-size: 1.8rem;
 `;

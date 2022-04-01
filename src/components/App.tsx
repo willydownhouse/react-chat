@@ -10,7 +10,8 @@ import FrontPage from './FrontPage';
 import Navbar from './Navbar';
 import ProtectedRoute from './ProtectedRoute';
 import GlobalStyles from '../styles/global';
-import { AppContainer } from '../styles';
+import { AppContainer, ContentWrap } from '../styles';
+import SideBar from './SideBar';
 
 function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
@@ -24,24 +25,28 @@ function App() {
     checkIfLoggedIn(dispatch);
   }, []);
   return (
-    <AppContainer padding="0 10rem">
+    <AppContainer>
       <GlobalStyles />
       <Provider value={{ state, dispatch }}>
         <BrowserRouter>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<FrontPage />} />
-            <Route
-              path="/chat"
-              element={
-                <>
-                  <ProtectedRoute>
-                    <ChatPage />
-                  </ProtectedRoute>
-                </>
-              }
-            />
-          </Routes>
+          <ContentWrap>
+            <SideBar />
+            <Routes>
+              <Route path="/" element={<FrontPage />} />
+              <Route
+                path="/chat"
+                element={
+                  <>
+                    <ProtectedRoute>
+                      <ChatPage />
+                    </ProtectedRoute>
+                  </>
+                }
+              />
+            </Routes>
+            <SideBar />
+          </ContentWrap>
         </BrowserRouter>
       </Provider>
     </AppContainer>

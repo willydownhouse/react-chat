@@ -18,6 +18,7 @@ const provider = new FacebookAuthProvider();
 
 export const login = (dispatch: React.Dispatch<IAppAction>) => {
   const auth = getAuth();
+
   signInWithPopup(auth, provider)
     .then(result => {
       // The signed-in user info.
@@ -25,9 +26,11 @@ export const login = (dispatch: React.Dispatch<IAppAction>) => {
 
       // This gives you a Facebook Access Token. You can use it to access the Facebook API.
       const credential = FacebookAuthProvider.credentialFromResult(result);
+      //tällä tulee
+
       const accessToken = (credential as OAuthCredential).accessToken;
 
-      console.log(user);
+      localStorage.setItem('token', accessToken as string);
 
       const { displayName, email, photoURL, uid } = user;
 
@@ -36,6 +39,7 @@ export const login = (dispatch: React.Dispatch<IAppAction>) => {
         name: displayName as string,
         email: email as string,
         photoURL: photoURL as string,
+        token: accessToken as string,
       };
 
       dispatch({
@@ -66,7 +70,8 @@ export const login = (dispatch: React.Dispatch<IAppAction>) => {
       const email = error.email;
       // The AuthCredential type that was used.
       const credential = FacebookAuthProvider.credentialFromError(error);
-
+      console.log('ERROR');
+      console.log(credential);
       console.log(error);
     });
 };
@@ -79,11 +84,14 @@ export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
 
     const { displayName, email, photoURL, uid } = user;
 
+    const token = localStorage.getItem('token');
+
     const currentUser: IUser = {
       id: uid,
       name: displayName as string,
       email: email as string,
       photoURL: photoURL as string,
+      token: token as string,
     };
 
     dispatch({
@@ -93,9 +101,9 @@ export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
   });
 };
 
-export const logout = async (dispatch: React.Dispatch<IAppAction>) => {
-  await getAuth().signOut();
-
+export const logout = (dispatch: React.Dispatch<IAppAction>) => {
+  getAuth().signOut();
+  localStorage.removeItem('token');
   dispatch({
     type: LOG_OUT,
   });

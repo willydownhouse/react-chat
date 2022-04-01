@@ -23,6 +23,7 @@ function MessageInput() {
       id: uuidv4(),
       author: state.user?.name as string,
       authorId: state.user?.id as string,
+      authorImg: state.user?.photoURL as string,
       text: values.message,
       createdAt: new Date().toISOString(),
     };

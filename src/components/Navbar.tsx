@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useStateValue } from '../state/context';
-import { Nav } from '../styles';
+import { FBbutton, Nav } from '../styles/navbar';
 import { login, logout } from '../utils/auth';
 
 function Navbar() {
@@ -14,9 +14,11 @@ function Navbar() {
         <Link to="/chat">Chat</Link>
       </div>
 
-      <button onClick={() => (state.user ? logout(dispatch) : login(dispatch))}>
+      <FBbutton
+        onClick={() => (state.user ? logout(dispatch) : login(dispatch))}
+      >
         {state.user ? 'Sign out' : 'Sign in'}
-      </button>
+      </FBbutton>
     </Nav>
   );
 }

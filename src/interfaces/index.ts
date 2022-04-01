@@ -4,6 +4,7 @@ export interface IMessage {
   id: string;
   authorId: string;
   author: string;
+  authorImg: string;
   createdAt: string;
   text: string;
 }
@@ -13,6 +14,7 @@ export interface IUser {
   name: string;
   email: string;
   photoURL: string;
+  token: string;
 }
 
 export interface INotification {

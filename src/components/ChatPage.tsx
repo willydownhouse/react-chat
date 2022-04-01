@@ -22,7 +22,13 @@ function ChatPage() {
 
   const renderMessages = () => {
     return state.messages.map(msg => {
-      return <Message key={msg.id} message={msg} />;
+      return (
+        <Message
+          key={msg.id}
+          message={msg}
+          token={state.user?.token as string}
+        />
+      );
     });
   };
 

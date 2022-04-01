@@ -44,9 +44,10 @@ export const addNewMessage = async (
   }
 };
 
-//(data as IMessage[])
-// .sort(
-//     (a, b) =>
-//       new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
-//   )
-//   .slice(-3)
+export const modifyDate = (date: string) => {
+  const today = new Date().toLocaleDateString();
+  const d = new Date(date).toLocaleDateString();
+  const time = new Date(date).toLocaleTimeString().substring(0, 4);
+
+  return `${today === d ? 'today' : d} ${time}`;
+};

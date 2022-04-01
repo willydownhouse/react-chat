@@ -1,5 +1,5 @@
 import React from 'react';
-import { PageContainer } from '../styles';
+import { AppContainer, PageContainer } from '../styles';
 
 function FrontPage() {
   return <PageContainer>FrontPage</PageContainer>;
