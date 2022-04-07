@@ -4,7 +4,7 @@ import { useStateValue } from '../state/context';
 import { IMessage } from '../interfaces';
 import { addNewMessage, fetchMessages } from '../utils/messages';
 import { v4 as uuidv4 } from 'uuid';
-import { StyledButton, StyledField, StyledForm } from '../styles';
+import { StyledButton, StyledField, StyledForm } from '../styles/input';
 import * as yup from 'yup';
 
 const initialValues = {
@@ -12,7 +12,7 @@ const initialValues = {
 };
 
 const validationSchema = yup.object().shape({
-  message: yup.string().required('Required'),
+  message: yup.string().required("You can't send empty messages.."),
 });
 
 function MessageInput() {
@@ -33,16 +33,28 @@ function MessageInput() {
   };
   return (
     <Formik
-      onSubmit={values => handleSubmit(values)}
+      onSubmit={(values, { resetForm }) => {
+        handleSubmit(values);
+        resetForm();
+      }}
       initialValues={initialValues}
       validationSchema={validationSchema}
     >
-      {({ values, errors }) => (
+      {({ values, errors, handleBlur }) => (
         <StyledForm>
           <StyledField
             name="message"
             value={values.message}
-            placeholder="Send message..."
+            placeholder={errors.message ? errors.message : 'Send message...'}
+            autoComplete="off"
+            errors={errors.message}
+            onBlur={(e: React.FocusEvent<HTMLInputElement>) => {
+              handleBlur(e);
+              if (values.message === '') {
+                errors.message = '';
+              }
+              console.log(errors);
+            }}
           />
           <StyledButton type="submit">Send</StyledButton>
         </StyledForm>

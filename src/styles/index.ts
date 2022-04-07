@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { Field, Form } from 'formik';
 
 type ContainerProps = {
   padding?: string;
@@ -8,8 +7,14 @@ type ContainerProps = {
 
 export const AppContainer = styled.div<ContainerProps>`
   height: 100vh;
-  background: #202225;
-
+  //background: #202225;
+  /* background: linear-gradient(
+    to right bottom,
+    rgba(0, 4, 40, 1),
+    rgba(0, 78, 146, 0.8)
+  ); */
+  background-image: linear-gradient(to right, #868f96 0%, #596164 100%);
+  //background: linear-gradient(to right, #aa076b, #61045f);
   @media (max-width: 850px) {
     padding: 0 1rem;
   }
@@ -18,6 +23,10 @@ export const AppContainer = styled.div<ContainerProps>`
 export const ContentWrap = styled.div`
   display: grid;
   grid-template-columns: 1fr 4fr 1fr;
+
+  @media (max-width: 850px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 export const PageContainer = styled.div`
@@ -30,45 +39,25 @@ export const ChatContainer = styled.div`
   background-color: transparent;
   display: flex;
   flex-direction: column;
+  border-radius: 5px;
 `;
 
 export const MsgContainer = styled.div`
   height: 90%;
+  padding: 0rem 10rem;
   overflow-y: scroll;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  border-radius: 5px;
 
   &::-webkit-scrollbar {
     display: none;
   }
-`;
-
-export const StyledForm = styled(Form)`
-  height: 10%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const StyledField = styled(Field)`
-  width: 90%;
-  height: 4rem;
-  outline: none;
-  font-size: 1.8rem;
-
-  &:focus {
-    border: 2px solid #6544d1;
-  }
 
   @media (max-width: 850px) {
-    width: 90%;
+    padding: 1rem 1rem;
   }
-`;
-
-export const StyledButton = styled.button`
-  width: 10%;
-  height: 4rem;
-  background: linear-gradient(#ea3ea3, #ec15d2);
-  outline: none;
-  color: white;
-  cursor: pointer;
-  font-family: 'Roboto', sans-serif;
 `;

@@ -9,13 +9,45 @@ import {
   limit,
 } from '@firebase/firestore';
 import { db } from '../firebase';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
+export const useMessages = () => {
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  console.log('use messages');
+
+  const mesRef = collection(db, 'messages');
+
+  const q = query(mesRef, orderBy('createdAt', 'desc'), limit(25));
+
+  useEffect(() => {
+    setLoading(true);
+
+    getDocs(q)
+      .then(res => {
+        const data = res.docs
+          .map(doc => ({ ...doc.data(), id: doc.id }))
+          .reverse();
+
+        setMessages(data as IMessage[]);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  return { messages, loading, error };
+};
 
 export const fetchMessages = async (dispatch: React.Dispatch<IAppAction>) => {
   try {
     const mesRef = collection(db, 'messages');
 
-    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(10));
+    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(25));
 
     const res = await getDocs(q);
 
@@ -47,7 +79,7 @@ export const addNewMessage = async (
 export const modifyDate = (date: string) => {
   const today = new Date().toLocaleDateString();
   const d = new Date(date).toLocaleDateString();
-  const time = new Date(date).toLocaleTimeString().substring(0, 4);
+  const time = new Date(date).toLocaleTimeString().split('');
 
-  return `${today === d ? 'today' : d} ${time}`;
+  return `${today === d ? 'today' : d} ${time.slice(0, -6).join('')}`;
 };

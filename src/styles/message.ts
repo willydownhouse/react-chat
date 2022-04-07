@@ -13,6 +13,12 @@ export const StyledMsg = styled.div<StyledMsgProps>`
   border-radius: 5px;
   display: flex;
   align-items: center;
+  background: linear-gradient(
+    to right bottom,
+    rgba(255, 255, 255, 0.7),
+    rgba(255, 255, 255, 0.3)
+  );
+  color: #36393f;
 `;
 
 export const Flex = styled.div`

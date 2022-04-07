@@ -3,7 +3,8 @@ import styled from 'styled-components';
 export const Nav = styled.nav`
   padding: 0 2rem;
   height: 15vh;
-  background: #202225;
+  //background: #202225;
+  background: transparent;
   display: flex;
   align-items: center;
   justify-content: space-between;

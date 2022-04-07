@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { useStateValue } from '../state/context';
 
 import Message from './Message';
-import { fetchMessages } from '../utils/messages';
+import { fetchMessages, useMessages } from '../utils/messages';
 import MessageInput from './MessageInput';
 import { ChatContainer, MsgContainer, PageContainer } from '../styles';
 

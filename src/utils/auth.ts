@@ -5,6 +5,7 @@ import {
   OAuthCredential,
 } from 'firebase/auth';
 import React from 'react';
+import { Location, NavigateFunction, useNavigate } from 'react-router-dom';
 import {
   IAppAction,
   IUser,
@@ -16,7 +17,11 @@ import {
 
 const provider = new FacebookAuthProvider();
 
-export const login = (dispatch: React.Dispatch<IAppAction>) => {
+export const login = (
+  dispatch: React.Dispatch<IAppAction>,
+  location: Location,
+  navigate: NavigateFunction
+) => {
   const auth = getAuth();
 
   signInWithPopup(auth, provider)
@@ -41,6 +46,10 @@ export const login = (dispatch: React.Dispatch<IAppAction>) => {
         photoURL: photoURL as string,
         token: accessToken as string,
       };
+
+      if (location.pathname === '/') {
+        navigate('/chat');
+      }
 
       dispatch({
         type: LOG_IN,
@@ -78,8 +87,6 @@ export const login = (dispatch: React.Dispatch<IAppAction>) => {
 
 export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
   getAuth().onAuthStateChanged(user => {
-    console.log(user);
-
     if (!user) return;
 
     const { displayName, email, photoURL, uid } = user;
