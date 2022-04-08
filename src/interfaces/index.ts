@@ -7,6 +7,7 @@ export interface IMessage {
   authorImg: string;
   createdAt: string;
   text: string;
+  isCommentOfMsgId: string | null;
 }
 
 export interface IUser {
@@ -26,6 +27,7 @@ export interface IAppState {
   messages: IMessage[];
   user: IUser | null;
   notification: INotification | null;
+  isCommentingMsgId: string | null;
 }
 
 export interface IStateContext {
@@ -38,7 +40,7 @@ interface BaseAction {
 }
 
 interface AppAction extends BaseAction {
-  payload?: IMessage[] | IUser | INotification;
+  payload?: IMessage[] | IUser | INotification | string;
 }
 
 export type IAppAction = AppAction;
@@ -49,3 +51,5 @@ export const SET_NOTIFICATION = 'SET_NOTIFICATION';
 export const REMOVE_NOTIFICATION = 'REMOVE_NOTIFICATION';
 export const LOG_IN = 'LOG_IN';
 export const LOG_OUT = 'LOG_OUT';
+export const COMMENT_MSG = 'COMMENT_MSG';
+export const REMOVE_MSG_COMMENT = 'REMOVE_MSG_COMMENT';

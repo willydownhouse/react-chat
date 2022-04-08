@@ -1,4 +1,5 @@
 import {
+  COMMENT_MSG,
   FETCH_SUCCESS,
   IAppAction,
   IAppState,
@@ -7,6 +8,7 @@ import {
   IUser,
   LOG_IN,
   LOG_OUT,
+  REMOVE_MSG_COMMENT,
   REMOVE_NOTIFICATION,
   SET_NOTIFICATION,
 } from '../interfaces';
@@ -36,6 +38,16 @@ export const reducer = (state: IAppState, action: IAppAction): IAppState => {
       return {
         ...state,
         messages: action.payload as IMessage[],
+      };
+    case COMMENT_MSG:
+      return {
+        ...state,
+        isCommentingMsgId: action.payload as string,
+      };
+    case REMOVE_MSG_COMMENT:
+      return {
+        ...state,
+        isCommentingMsgId: null,
       };
     default:
       return state;

@@ -5,6 +5,7 @@ export const initialState: IAppState = {
   messages: [],
   user: null,
   notification: null,
+  isCommentingMsgId: null,
 };
 
 const StateContext = createContext<IStateContext>({

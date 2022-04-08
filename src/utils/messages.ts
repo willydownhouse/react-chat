@@ -2,6 +2,7 @@ import { FETCH_SUCCESS, IAppAction, IMessage } from '../interfaces';
 import {
   getDocs,
   collection,
+  getDoc,
   setDoc,
   doc,
   query,
@@ -82,4 +83,36 @@ export const modifyDate = (date: string) => {
   const time = new Date(date).toLocaleTimeString().split('');
 
   return `${today === d ? 'today' : d} ${time.slice(0, -6).join('')}`;
+};
+
+export const useMsgForComment = (id: string) => {
+  const [message, setMessage] = useState<IMessage | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!id) {
+      setMessage(null);
+      return;
+    }
+
+    setLoading(true);
+    const messageRef = doc(db, 'messages', id);
+
+    getDoc(messageRef)
+      .then(res => {
+        setMessage(res.data() as IMessage);
+        setLoading(false);
+      })
+      .catch(err => {
+        setError(err.message);
+        setLoading(false);
+      });
+  }, [id]);
+
+  return {
+    message,
+    error,
+    loading,
+  };
 };

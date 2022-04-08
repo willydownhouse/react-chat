@@ -6,15 +6,9 @@ type ContainerProps = {
 };
 
 export const AppContainer = styled.div<ContainerProps>`
-  height: 100vh;
-  //background: #202225;
-  /* background: linear-gradient(
-    to right bottom,
-    rgba(0, 4, 40, 1),
-    rgba(0, 78, 146, 0.8)
-  ); */
   background-image: linear-gradient(to right, #868f96 0%, #596164 100%);
-  //background: linear-gradient(to right, #aa076b, #61045f);
+  min-height: 100vh;
+
   @media (max-width: 850px) {
     padding: 0 1rem;
   }
@@ -29,9 +23,7 @@ export const ContentWrap = styled.div`
   }
 `;
 
-export const PageContainer = styled.div`
-  height: 85vh;
-`;
+export const PageContainer = styled.div``;
 
 export const ChatContainer = styled.div`
   width: 100%;
@@ -43,7 +35,7 @@ export const ChatContainer = styled.div`
 `;
 
 export const MsgContainer = styled.div`
-  height: 90%;
+  height: 85%;
   padding: 0rem 10rem;
   overflow-y: scroll;
   background: linear-gradient(
@@ -52,6 +44,7 @@ export const MsgContainer = styled.div`
     rgba(255, 255, 255, 0.3)
   );
   border-radius: 5px;
+  margin-bottom: 1rem;
 
   &::-webkit-scrollbar {
     display: none;

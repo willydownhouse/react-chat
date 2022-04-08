@@ -4,6 +4,11 @@ import { Field, Form } from 'formik';
 export const StyledForm = styled(Form)`
   height: 10%;
   display: flex;
+  flex-direction: column;
+`;
+
+export const InputWrap = styled.div`
+  display: flex;
   align-items: center;
   justify-content: space-between;
 `;
