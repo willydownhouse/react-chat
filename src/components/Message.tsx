@@ -7,12 +7,14 @@ import {
   Flex,
   ImgWrap,
   Msg,
-  MsgWrap,
+  MsgBottom,
+  MsgTop,
   ProfileImg,
   StyledMsg,
 } from '../styles/message';
 import { modifyDate, useMsgForComment } from '../utils/messages';
 import Comment from './Comment';
+import UploadedImg from './UploadedImg';
 
 type MessageProps = {
   message: IMessage;
@@ -31,20 +33,21 @@ function Message({ message, token, onClick }: MessageProps) {
       {commentedMsg && <Comment message={commentedMsg} />}
       <StyledMsg
         onClick={() => onClick(message.id)}
-        comment={commentedMsg ? true : false}
+        $comment={commentedMsg ? true : false}
       >
-        <ImgWrap>
-          <ProfileImg src={`${message.authorImg}?access_token=${token}`} />
-        </ImgWrap>
-        <div>
+        <MsgTop>
+          <ImgWrap>
+            <ProfileImg src={`${message.authorImg}?access_token=${token}`} />
+          </ImgWrap>
           <Flex>
             <Author>{message.author}</Author>
             <h4>{modifyDate(message.createdAt)}</h4>
           </Flex>
-          <MsgWrap>
-            <Msg>{message.text}</Msg>
-          </MsgWrap>
-        </div>
+        </MsgTop>
+        {message.imgUrl ? <UploadedImg src={message.imgUrl} /> : null}
+        <MsgBottom>
+          <Msg>{message.text}</Msg>
+        </MsgBottom>
       </StyledMsg>
     </>
   );

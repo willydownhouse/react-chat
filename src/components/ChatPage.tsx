@@ -6,7 +6,7 @@ import { useStateValue } from '../state/context';
 import Message from './Message';
 import { fetchMessages, useMessages } from '../utils/messages';
 import MessageInput from './MessageInput';
-import { ChatContainer, MsgContainer, PageContainer } from '../styles';
+import { ChatContainer, MsgContainer } from '../styles';
 import { COMMENT_MSG } from '../interfaces';
 
 function ChatPage() {
@@ -42,16 +42,14 @@ function ChatPage() {
   }, [state.messages]);
 
   return (
-    <PageContainer>
-      <ChatContainer>
-        <MsgContainer>
-          <>{renderMessages()}</>
-          <div ref={ref}></div>
-        </MsgContainer>
+    <ChatContainer>
+      <MsgContainer>
+        <>{renderMessages()}</>
+        <div ref={ref}></div>
+      </MsgContainer>
 
-        <MessageInput />
-      </ChatContainer>
-    </PageContainer>
+      <MessageInput />
+    </ChatContainer>
   );
 }
 

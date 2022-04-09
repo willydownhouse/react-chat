@@ -2,7 +2,7 @@ import styled from 'styled-components';
 
 export const Nav = styled.nav`
   padding: 0 2rem;
-  height: 15vh;
+  height: 10vh;
   //background: #202225;
   background: transparent;
   display: flex;

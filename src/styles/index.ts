@@ -10,7 +10,7 @@ export const AppContainer = styled.div<ContainerProps>`
   min-height: 100vh;
 
   @media (max-width: 850px) {
-    padding: 0 1rem;
+    padding: 0;
   }
 `;
 
@@ -23,19 +23,19 @@ export const ContentWrap = styled.div`
   }
 `;
 
-export const PageContainer = styled.div``;
-
 export const ChatContainer = styled.div`
   width: 100%;
-  height: 100%;
+  height: 90vh;
   background-color: transparent;
-  display: flex;
-  flex-direction: column;
+
   border-radius: 5px;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 8fr 2fr;
 `;
 
 export const MsgContainer = styled.div`
-  height: 85%;
+  height: 100%;
   padding: 0rem 10rem;
   overflow-y: scroll;
   background: linear-gradient(
@@ -43,6 +43,7 @@ export const MsgContainer = styled.div`
     rgba(255, 255, 255, 0.7),
     rgba(255, 255, 255, 0.3)
   );
+  //background: transparent;
   border-radius: 5px;
   margin-bottom: 1rem;
 
@@ -52,5 +53,9 @@ export const MsgContainer = styled.div`
 
   @media (max-width: 850px) {
     padding: 1rem 1rem;
+  }
+
+  @media (max-width: 600px) {
+    background: transparent;
   }
 `;

@@ -8,6 +8,7 @@ export interface IMessage {
   createdAt: string;
   text: string;
   isCommentOfMsgId: string | null;
+  imgUrl?: string;
 }
 
 export interface IUser {

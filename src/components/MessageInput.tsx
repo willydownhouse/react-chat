@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, FormikValues } from 'formik';
 import { useStateValue } from '../state/context';
 import { IMessage, REMOVE_MSG_COMMENT } from '../interfaces';
@@ -11,6 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 import Comment from './Comment';
 import {
   InputWrap,
+  SMessageInput,
   StyledButton,
   StyledField,
   StyledForm,
@@ -18,9 +19,9 @@ import {
 import * as yup from 'yup';
 import { CommentBtn } from '../styles/message';
 import { TiDelete } from 'react-icons/ti';
+import { handleUploadAndGetImgUrl } from '../utils/image';
 
 const initialValues = {
-  commenting: '',
   message: '',
 };
 
@@ -29,13 +30,11 @@ const validationSchema = yup.object().shape({
 });
 
 function MessageInput() {
+  const [file, setFile] = useState<File | string>('');
   const { state, dispatch } = useStateValue();
+  const { message } = useMsgForComment(state.isCommentingMsgId as string);
 
-  const { message, loading, error } = useMsgForComment(
-    state.isCommentingMsgId as string
-  );
-
-  const handleSubmit = (values: FormikValues) => {
+  const handleSubmit = (values: FormikValues, imgUrl = '') => {
     const message: IMessage = {
       id: uuidv4(),
       author: state.user?.name as string,
@@ -44,6 +43,7 @@ function MessageInput() {
       text: values.message,
       createdAt: new Date().toISOString(),
       isCommentOfMsgId: state.isCommentingMsgId,
+      imgUrl,
     };
 
     addNewMessage(message, dispatch);
@@ -52,41 +52,65 @@ function MessageInput() {
     dispatch({ type: REMOVE_MSG_COMMENT });
   };
   return (
-    <Formik
-      onSubmit={(values, { resetForm }) => {
-        handleSubmit(values);
-        resetForm();
-      }}
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-    >
-      {({ values, errors }) => (
-        <StyledForm>
-          {message && (
-            <>
-              <Comment message={message}>
-                <CommentBtn
-                  onClick={() => dispatch({ type: REMOVE_MSG_COMMENT })}
-                >
-                  <TiDelete size={`2rem`} />
-                </CommentBtn>
-              </Comment>
-            </>
-          )}
+    <SMessageInput>
+      <Formik
+        onSubmit={async (values, { resetForm }) => {
+          console.log(values);
 
-          <InputWrap>
-            <StyledField
-              name="message"
-              value={values.message}
-              placeholder={errors.message ? errors.message : 'Send message...'}
-              autoComplete="off"
-              errors={errors.message}
+          if (file) {
+            const imgUrl = await handleUploadAndGetImgUrl(file as File);
+
+            console.log(imgUrl);
+            if (!imgUrl) return;
+            console.log('submits');
+            handleSubmit(values, imgUrl as string);
+            resetForm();
+            setFile('');
+            return;
+          }
+          console.log('submits');
+          handleSubmit(values);
+          resetForm();
+          setFile('');
+        }}
+        initialValues={initialValues}
+        validationSchema={validationSchema}
+      >
+        {({ values, errors }) => (
+          <StyledForm>
+            {message ? (
+              <>
+                <Comment message={message}>
+                  <CommentBtn
+                    onClick={() => dispatch({ type: REMOVE_MSG_COMMENT })}
+                  >
+                    <TiDelete size={`3rem`} />
+                  </CommentBtn>
+                </Comment>
+              </>
+            ) : null}
+
+            <InputWrap>
+              <StyledField
+                name="message"
+                value={values.message}
+                placeholder={
+                  errors.message ? errors.message : 'Send message...'
+                }
+                autoComplete="off"
+                errors={errors.message}
+                $comment={message ? true : false}
+              />
+              <StyledButton type="submit">Send</StyledButton>
+            </InputWrap>
+            <input
+              type={'file'}
+              onChange={e => setFile(e.target.files ? e.target.files[0] : '')}
             />
-            <StyledButton type="submit">Send</StyledButton>
-          </InputWrap>
-        </StyledForm>
-      )}
-    </Formik>
+          </StyledForm>
+        )}
+      </Formik>
+    </SMessageInput>
   );
 }
 
