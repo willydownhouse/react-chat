@@ -108,10 +108,33 @@ export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
   });
 };
 
-export const logout = (dispatch: React.Dispatch<IAppAction>) => {
+export const logout = (
+  dispatch: React.Dispatch<IAppAction>,
+  location: Location,
+  navigate: NavigateFunction
+) => {
   getAuth().signOut();
   localStorage.removeItem('token');
+
+  if (location.pathname === '/chat') {
+    navigate('/');
+  }
   dispatch({
     type: LOG_OUT,
   });
+
+  dispatch({
+    type: SET_NOTIFICATION,
+    payload: {
+      text: 'You logged out',
+      color: 'red',
+    },
+  });
+  setTimeout(
+    () =>
+      dispatch({
+        type: REMOVE_NOTIFICATION,
+      }),
+    3000
+  );
 };

@@ -17,8 +17,6 @@ export const useMessages = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
-  console.log('use messages');
-
   const mesRef = collection(db, 'messages');
 
   const q = query(mesRef, orderBy('createdAt', 'desc'), limit(25));
@@ -44,17 +42,23 @@ export const useMessages = () => {
   return { messages, loading, error };
 };
 
-export const fetchMessages = async (dispatch: React.Dispatch<IAppAction>) => {
+export const fetchMessages = async (
+  dispatch: React.Dispatch<IAppAction>,
+  numOfMsg: number
+) => {
   try {
     const mesRef = collection(db, 'messages');
 
-    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(25));
+    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(numOfMsg));
 
+    //const res = await getDocs(mesRef);
+
+    //console.log(res.size);
     const res = await getDocs(q);
-
+    console.log(res.size);
     const data = res.docs.map(doc => ({ ...doc.data(), id: doc.id })).reverse();
 
-    console.log(data);
+    //console.log(data);
 
     dispatch({
       type: FETCH_SUCCESS,

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useStateValue } from '../state/context';
 import { FBbutton, Nav } from '../styles/navbar';
 import { login, logout } from '../utils/auth';
@@ -11,14 +11,13 @@ function Navbar() {
 
   return (
     <Nav>
-      <div>
-        <Link to="/">Front</Link>
-        <Link to="/chat">Chat</Link>
-      </div>
+      <div></div>
 
       <FBbutton
         onClick={() =>
-          state.user ? logout(dispatch) : login(dispatch, location, navigate)
+          state.user
+            ? logout(dispatch, location, navigate)
+            : login(dispatch, location, navigate)
         }
       >
         {state.user ? 'Sign out' : 'Sign in'}

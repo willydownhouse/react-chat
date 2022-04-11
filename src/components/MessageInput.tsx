@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Formik, Form, Field, FormikValues } from 'formik';
+import { Formik, FormikValues } from 'formik';
 import { useStateValue } from '../state/context';
 import { IMessage, REMOVE_MSG_COMMENT } from '../interfaces';
 import {
@@ -20,6 +20,7 @@ import * as yup from 'yup';
 import { CommentBtn } from '../styles/message';
 import { TiDelete } from 'react-icons/ti';
 import { handleUploadAndGetImgUrl } from '../utils/image';
+import FileInput from './FileInput';
 
 const initialValues = {
   message: '',
@@ -47,7 +48,7 @@ function MessageInput() {
     };
 
     addNewMessage(message, dispatch);
-    fetchMessages(dispatch);
+    fetchMessages(dispatch, 100);
 
     dispatch({ type: REMOVE_MSG_COMMENT });
   };
@@ -56,6 +57,8 @@ function MessageInput() {
       <Formik
         onSubmit={async (values, { resetForm }) => {
           console.log(values);
+
+          console.log(file);
 
           if (file) {
             const imgUrl = await handleUploadAndGetImgUrl(file as File);
@@ -103,10 +106,7 @@ function MessageInput() {
               />
               <StyledButton type="submit">Send</StyledButton>
             </InputWrap>
-            <input
-              type={'file'}
-              onChange={e => setFile(e.target.files ? e.target.files[0] : '')}
-            />
+            <FileInput file={file} setFile={setFile} />
           </StyledForm>
         )}
       </Formik>

@@ -1,21 +1,25 @@
-import React, { useCallback, useMemo, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useEffect } from 'react';
 
 import { useStateValue } from '../state/context';
 
 import Message from './Message';
-import { fetchMessages, useMessages } from '../utils/messages';
+import { fetchMessages } from '../utils/messages';
 import MessageInput from './MessageInput';
-import { ChatContainer, MsgContainer } from '../styles';
+import { ChatContainer, ContentWrap, MsgContainer } from '../styles';
 import { COMMENT_MSG } from '../interfaces';
+import SideBar from './SideBar';
 
 function ChatPage() {
+  //const [amountOfMsg, setAmountOfMsg] = useState<number>(10);
   const { state, dispatch } = useStateValue();
   const ref = useRef() as React.MutableRefObject<HTMLDivElement>;
 
-  useEffect(() => {
-    fetchMessages(dispatch);
-  }, []);
+  // const scrollRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+
+  // useEffect(() => {
+  //   fetchMessages(dispatch, amountOfMsg);
+  // }, [amountOfMsg]);
 
   useEffect(() => {
     ref.current.scrollIntoView({ behavior: 'smooth' });
@@ -41,15 +45,35 @@ function ChatPage() {
     });
   }, [state.messages]);
 
-  return (
-    <ChatContainer>
-      <MsgContainer>
-        <>{renderMessages()}</>
-        <div ref={ref}></div>
-      </MsgContainer>
+  // const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
+  //   const containerHeight = e.currentTarget.clientHeight;
 
-      <MessageInput />
-    </ChatContainer>
+  //   const scrollHeight = e.currentTarget.scrollHeight;
+  //   const scrollTop = e.currentTarget.scrollTop;
+
+  //   const position = ((scrollTop + containerHeight) / scrollHeight) * 100;
+
+  //   if (position > 35) return;
+
+  //   console.log('scroll position:');
+  //   console.log(position);
+  //   console.log('lets fetch more!');
+  //   setAmountOfMsg(amountOfMsg + 1);
+  // };
+
+  return (
+    <ContentWrap>
+      <SideBar />
+      <ChatContainer>
+        <MsgContainer>
+          <>{renderMessages()}</>
+          <div ref={ref}></div>
+        </MsgContainer>
+
+        <MessageInput />
+      </ChatContainer>
+      <SideBar />
+    </ContentWrap>
   );
 }
 

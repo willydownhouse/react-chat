@@ -38,12 +38,12 @@ export const StyledField = styled(Field)<StyledFieldProps>`
   border-bottom-left-radius: 5px;
   border-bottom-right-radius: 5px;
   border-top-right-radius: 5px;
+  margin-bottom: 0.5rem;
   @media (max-width: 850px) {
     width: 85%;
   }
   @media (max-width: 600px) {
     width: 100%;
-    margin-bottom: 1rem;
   }
 `;
 
@@ -57,6 +57,7 @@ export const StyledButton = styled.button`
   color: white;
   cursor: pointer;
   font-family: 'Roboto', sans-serif;
+  margin-bottom: 0.5rem;
 
   @media (max-width: 850px) {
     width: 12%;
@@ -64,4 +65,28 @@ export const StyledButton = styled.button`
   @media (max-width: 600px) {
     width: 100%;
   }
+`;
+
+export const FileInputCont = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 20%;
+
+  @media (max-width: 600px) {
+    width: 100%;
+    justify-content: space-between;
+  }
+`;
+
+export const FileInputLabel = styled.label`
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+`;
+
+export const SFileInput = styled.input`
+  display: none;
 `;
