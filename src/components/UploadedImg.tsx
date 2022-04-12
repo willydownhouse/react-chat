@@ -11,7 +11,10 @@ function UploadedImg({ src }: UploadedImgProps) {
     <SUploadedImg>
       <SImg
         isLoaded={isLoaded}
-        onLoad={() => setIsLoaded(true)}
+        onLoad={() => {
+          console.log('IMAGE LOADED!');
+          setIsLoaded(true);
+        }}
         src={src}
         alt="img"
       />

@@ -1,5 +1,11 @@
 import styled from 'styled-components';
 
+export const SideBarEl = styled.div`
+  @media (max-width: 850px) {
+    display: none;
+  }
+`;
+
 export const SNotification = styled.div`
   position: absolute;
   top: 0;
@@ -57,7 +63,6 @@ export const MsgContainer = styled.div`
   margin-bottom: 1rem;
 
   &::-webkit-scrollbar {
-    display: none;
   }
 
   @media (max-width: 850px) {

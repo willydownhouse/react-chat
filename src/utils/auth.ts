@@ -5,7 +5,7 @@ import {
   OAuthCredential,
 } from 'firebase/auth';
 import React from 'react';
-import { Location, NavigateFunction, useNavigate } from 'react-router-dom';
+import { Location, NavigateFunction } from 'react-router-dom';
 import {
   IAppAction,
   IUser,
@@ -72,12 +72,6 @@ export const login = (
       );
     })
     .catch(error => {
-      // Handle Errors here.
-      const errorCode = error.code;
-      const errorMessage = error.message;
-      // The email of the user's account used.
-      const email = error.email;
-      // The AuthCredential type that was used.
       const credential = FacebookAuthProvider.credentialFromError(error);
       console.log('ERROR');
       console.log(credential);
