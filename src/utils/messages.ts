@@ -11,6 +11,7 @@ import {
 } from '@firebase/firestore';
 import { db } from '../firebase';
 import React, { useEffect, useState } from 'react';
+import { flushSync } from 'react-dom';
 
 export const useMessages = () => {
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -44,7 +45,7 @@ export const useMessages = () => {
 
 export const fetchMessages = async (
   dispatch: React.Dispatch<IAppAction>,
-  numOfMsg: number
+  numOfMsg = 20
 ) => {
   try {
     const mesRef = collection(db, 'messages');
@@ -55,7 +56,7 @@ export const fetchMessages = async (
 
     //console.log(res.size);
     const res = await getDocs(q);
-    console.log(res.size);
+
     const data = res.docs.map(doc => ({ ...doc.data(), id: doc.id })).reverse();
 
     //console.log(data);

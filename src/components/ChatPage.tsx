@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
 import { useEffect } from 'react';
 
 import { useStateValue } from '../state/context';
@@ -7,11 +7,12 @@ import Message from './Message';
 import { fetchMessages, useMessages } from '../utils/messages';
 import MessageInput from './MessageInput';
 import { ChatContainer, ContentWrap, MsgContainer } from '../styles';
-import { COMMENT_MSG, FETCH_SUCCESS } from '../interfaces';
+import { COMMENT_MSG, FETCH_SUCCESS, IMessage } from '../interfaces';
 import SideBar from './SideBar';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useInView } from 'react-intersection-observer';
+import { flushSync } from 'react-dom';
 
 function ChatPage() {
   const [amountOfMsg, setAmountOfMsg] = useState<number>(15);
@@ -20,7 +21,6 @@ function ChatPage() {
 
   const scrollRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const { ref, inView } = useInView();
-  const { messages, error, loading } = useMessages();
 
   useEffect(() => {
     if (!inView) return;
@@ -29,26 +29,39 @@ function ChatPage() {
   }, [inView]);
 
   useEffect(() => {
-    //fetchMessages(dispatch, amountOfMsg);
+    flushSync(() => {
+      fetchMessages(dispatch, amountOfMsg);
+    });
+
     //setIsScrolledDown(false);
-    // const unsubscribe = onSnapshot(collection(db, 'messages'), () => {
+    // const unsubscribe = onSnapshot(collection(db, 'messages'), snap => {
     //   console.log('listening db');
-    //   fetchMessages(dispatch, amountOfMsg);
+    //   console.log(snap);
     // });
     // return () => {
     //   unsubscribe();
     //   console.log('unsubscribe');
     // };
-    console.log(messages);
-    if (messages.length === 0) return;
-
-    dispatch({ type: FETCH_SUCCESS, payload: messages });
-  }, [messages]);
+  }, []);
 
   useEffect(() => {
-    if (state.messages.length === 0) return;
-    console.log('start scrolling');
-    scrollRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    const lastChild = scrollRef.current.lastElementChild;
+    console.log(lastChild);
+    if (!lastChild) return;
+
+    lastChild.scrollIntoView({
+      behavior: 'smooth',
+      block: 'end',
+      inline: 'nearest',
+    });
+
+    // setTimeout(() => {
+    //   lastChild.scrollIntoView({ behavior: 'smooth' });
+
+    //   console.log('after scrolling');
+    // }, 300);
+
+    console.log('scroll');
   }, [state.messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -82,13 +95,11 @@ function ChatPage() {
     });
   }, [state.messages]);
 
-  if (loading) return <div>Loading...</div>;
-
   return (
     <ContentWrap>
       <SideBar />
       <ChatContainer>
-        <MsgContainer onScroll={handleScroll}>
+        <MsgContainer ref={scrollRef} onScroll={handleScroll}>
           {state.messages.length !== 0 && isScrolledDown ? (
             <div
               ref={ref}
@@ -100,7 +111,7 @@ function ChatPage() {
           ) : null}
 
           <>{renderMessages()}</>
-          {state.messages.length === 0 ? null : (
+          {/* {state.messages.length !== 0 ? (
             <div
               style={{
                 height: '10px',
@@ -108,7 +119,7 @@ function ChatPage() {
               }}
               ref={scrollRef}
             ></div>
-          )}
+          ) : null} */}
         </MsgContainer>
 
         <MessageInput />

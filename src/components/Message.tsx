@@ -28,6 +28,7 @@ function Message({ message, token, onClick }: MessageProps) {
     loading,
     error,
   } = useMsgForComment(message.isCommentOfMsgId as string);
+
   return (
     <>
       {commentedMsg && <Comment message={commentedMsg} />}
