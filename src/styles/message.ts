@@ -82,6 +82,7 @@ export const ImgWrap = styled.div`
 
 export const ProfileImg = styled.img`
   border-radius: 0.5rem;
+  height: 5rem;
 `;
 
 export const CommentContent = styled.span`

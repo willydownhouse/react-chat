@@ -65,6 +65,8 @@ export const fetchMessages = async (
       type: FETCH_SUCCESS,
       payload: data as IMessage[],
     });
+
+    return data;
   } catch (err) {
     console.log(err);
   }

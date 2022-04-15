@@ -7,12 +7,11 @@ import Message from './Message';
 import { fetchMessages, useMessages } from '../utils/messages';
 import MessageInput from './MessageInput';
 import { ChatContainer, ContentWrap, MsgContainer } from '../styles';
-import { COMMENT_MSG, FETCH_SUCCESS, IMessage } from '../interfaces';
+import { COMMENT_MSG } from '../interfaces';
 import SideBar from './SideBar';
 import { collection, onSnapshot } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useInView } from 'react-intersection-observer';
-import { flushSync } from 'react-dom';
 
 function ChatPage() {
   const [amountOfMsg, setAmountOfMsg] = useState<number>(15);
@@ -26,42 +25,17 @@ function ChatPage() {
     if (!inView) return;
     console.log(`RED LINE is in the view ${inView}`);
     console.log('lets fetch more!');
+    setAmountOfMsg(amountOfMsg + 5);
   }, [inView]);
 
   useEffect(() => {
-    flushSync(() => {
-      fetchMessages(dispatch, amountOfMsg);
-    });
-
-    //setIsScrolledDown(false);
-    // const unsubscribe = onSnapshot(collection(db, 'messages'), snap => {
-    //   console.log('listening db');
-    //   console.log(snap);
-    // });
-    // return () => {
-    //   unsubscribe();
-    //   console.log('unsubscribe');
-    // };
-  }, []);
+    fetchMessages(dispatch, amountOfMsg);
+  }, [amountOfMsg]);
 
   useEffect(() => {
     const lastChild = scrollRef.current.lastElementChild;
-    console.log(lastChild);
-    if (!lastChild) return;
 
-    lastChild.scrollIntoView({
-      behavior: 'smooth',
-      block: 'end',
-      inline: 'nearest',
-    });
-
-    // setTimeout(() => {
-    //   lastChild.scrollIntoView({ behavior: 'smooth' });
-
-    //   console.log('after scrolling');
-    // }, 300);
-
-    console.log('scroll');
+    lastChild?.scrollIntoView({ behavior: 'smooth' });
   }, [state.messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -100,7 +74,7 @@ function ChatPage() {
       <SideBar />
       <ChatContainer>
         <MsgContainer ref={scrollRef} onScroll={handleScroll}>
-          {state.messages.length !== 0 && isScrolledDown ? (
+          {isScrolledDown ? (
             <div
               ref={ref}
               style={{
@@ -110,16 +84,7 @@ function ChatPage() {
             ></div>
           ) : null}
 
-          <>{renderMessages()}</>
-          {/* {state.messages.length !== 0 ? (
-            <div
-              style={{
-                height: '10px',
-                backgroundColor: 'green',
-              }}
-              ref={scrollRef}
-            ></div>
-          ) : null} */}
+          {renderMessages()}
         </MsgContainer>
 
         <MessageInput />
