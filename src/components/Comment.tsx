@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from 'react';
+import React, { ReactNode } from 'react';
 import { IMessage } from '../interfaces';
 import { CommentContent } from '../styles/message';
 

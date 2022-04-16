@@ -1,17 +1,19 @@
 import React from 'react';
-import { useStateValue } from '../state/context';
+
 import { SNotification } from '../styles';
 
-function Notification() {
-  const { state } = useStateValue();
+type NotificationProps = {
+  notification: string;
+};
 
-  if (!state.notification) return null;
+const Notification: React.FC<NotificationProps> = ({ notification }) => {
+  if (!notification) return null;
 
   return (
     <SNotification>
-      <p>{state.notification.text}</p>
+      <p>{notification}</p>
     </SNotification>
   );
-}
+};
 
 export default Notification;

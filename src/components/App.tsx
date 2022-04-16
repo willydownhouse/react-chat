@@ -1,8 +1,6 @@
-import React, { useReducer } from 'react';
+import React, { useState } from 'react';
 import { useEffect } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { initialState, Provider } from '../state/context';
-import { reducer } from '../state/reducer';
 import { checkIfLoggedIn } from '../utils/auth';
 import ChatPage from './ChatPage';
 import FrontPage from './FrontPage';
@@ -12,42 +10,41 @@ import ProtectedRoute from './ProtectedRoute';
 import GlobalStyles from '../styles/global';
 import { AppContainer } from '../styles';
 import Notification from './Notification';
+import { IUser } from '../interfaces';
 
 function App() {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [user, setUser] = useState<IUser | null>(null);
+  const [notification, setNotification] = useState<string>('');
 
   useEffect(() => {
-    console.log('STATE');
-    console.log(state);
-    //console.log(process.env.NODE_ENV);
-  }, [state]);
-
-  useEffect(() => {
-    checkIfLoggedIn(dispatch);
+    checkIfLoggedIn(setUser);
   }, []);
 
   return (
     <AppContainer>
       <GlobalStyles />
-      <Provider value={{ state, dispatch }}>
-        <BrowserRouter>
-          <Notification />
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<FrontPage />} />
-            <Route
-              path="/chat"
-              element={
-                <>
-                  <ProtectedRoute>
-                    <ChatPage />
-                  </ProtectedRoute>
-                </>
-              }
-            />
-          </Routes>
-        </BrowserRouter>
-      </Provider>
+
+      <BrowserRouter>
+        <Notification notification={notification} />
+        <Navbar
+          user={user}
+          setUser={setUser}
+          setNotification={setNotification}
+        />
+        <Routes>
+          <Route path="/" element={<FrontPage />} />
+          <Route
+            path="/chat"
+            element={
+              <>
+                <ProtectedRoute user={user}>
+                  <ChatPage user={user} />
+                </ProtectedRoute>
+              </>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
     </AppContainer>
   );
 }

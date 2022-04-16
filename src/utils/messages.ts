@@ -1,6 +1,5 @@
-import { FETCH_SUCCESS, IAppAction, IMessage } from '../interfaces';
+import { IMessage } from '../interfaces';
 import {
-  getDocs,
   collection,
   getDoc,
   setDoc,
@@ -10,72 +9,10 @@ import {
   limit,
 } from '@firebase/firestore';
 import { db } from '../firebase';
-import React, { useEffect, useState } from 'react';
-import { flushSync } from 'react-dom';
+import { useEffect, useState } from 'react';
+import { onSnapshot } from 'firebase/firestore';
 
-export const useMessages = () => {
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const mesRef = collection(db, 'messages');
-
-  const q = query(mesRef, orderBy('createdAt', 'desc'), limit(25));
-
-  useEffect(() => {
-    setLoading(true);
-
-    getDocs(q)
-      .then(res => {
-        const data = res.docs
-          .map(doc => ({ ...doc.data(), id: doc.id }))
-          .reverse();
-
-        setMessages(data as IMessage[]);
-        setLoading(false);
-      })
-      .catch(err => {
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
-
-  return { messages, loading, error };
-};
-
-export const fetchMessages = async (
-  dispatch: React.Dispatch<IAppAction>,
-  numOfMsg = 20
-) => {
-  try {
-    const mesRef = collection(db, 'messages');
-
-    const q = query(mesRef, orderBy('createdAt', 'desc'), limit(numOfMsg));
-
-    //const res = await getDocs(mesRef);
-
-    //console.log(res.size);
-    const res = await getDocs(q);
-
-    const data = res.docs.map(doc => ({ ...doc.data(), id: doc.id })).reverse();
-
-    //console.log(data);
-
-    dispatch({
-      type: FETCH_SUCCESS,
-      payload: data as IMessage[],
-    });
-
-    return data;
-  } catch (err) {
-    console.log(err);
-  }
-};
-
-export const addNewMessage = async (
-  message: IMessage,
-  dispatch: React.Dispatch<IAppAction>
-) => {
+export const addNewMessage = async (message: IMessage) => {
   try {
     console.log(message);
     await setDoc(doc(db, 'messages', message.id), message);
@@ -122,4 +59,20 @@ export const useMsgForComment = (id: string) => {
     error,
     loading,
   };
+};
+
+export const subscribe = (setMessages: (val: IMessage[]) => void) => {
+  const q = query(
+    collection(db, 'messages'),
+    orderBy('createdAt', 'desc'),
+    limit(25)
+  );
+
+  return onSnapshot(q, snap => {
+    const data = snap.docs
+      .map(doc => ({ ...doc.data(), id: doc.id }))
+      .reverse();
+
+    setMessages(data as IMessage[]);
+  });
 };

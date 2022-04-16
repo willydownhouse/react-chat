@@ -87,7 +87,7 @@ export const ProfileImg = styled.img`
 
 export const CommentContent = styled.span`
   max-width: 95%;
-
+  height: 2.8rem;
   position: relative;
   display: inline-block;
   background-image: linear-gradient(

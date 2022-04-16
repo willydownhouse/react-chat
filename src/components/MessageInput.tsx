@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { Formik, FormikValues } from 'formik';
-import { useStateValue } from '../state/context';
-import { IMessage, REMOVE_MSG_COMMENT } from '../interfaces';
-import {
-  addNewMessage,
-  fetchMessages,
-  useMsgForComment,
-} from '../utils/messages';
+import { IMessage, IUser } from '../interfaces';
+import { addNewMessage, useMsgForComment } from '../utils/messages';
 import { v4 as uuidv4 } from 'uuid';
 import Comment from './Comment';
 import {
@@ -30,27 +25,35 @@ const validationSchema = yup.object().shape({
   message: yup.string().required("You can't send empty messages.."),
 });
 
-function MessageInput() {
+type MessageInputProps = {
+  isCommentingMsgId: string;
+  setIsCommentingMsgId: (val: string) => void;
+  user: IUser | null;
+};
+
+const MessageInput: React.FC<MessageInputProps> = ({
+  isCommentingMsgId,
+  setIsCommentingMsgId,
+  user,
+}) => {
   const [file, setFile] = useState<File | string>('');
-  const { state, dispatch } = useStateValue();
-  const { message } = useMsgForComment(state.isCommentingMsgId as string);
+
+  const { message } = useMsgForComment(isCommentingMsgId as string);
 
   const handleSubmit = (values: FormikValues, imgUrl = '') => {
     const message: IMessage = {
       id: uuidv4(),
-      author: state.user?.name as string,
-      authorId: state.user?.id as string,
-      authorImg: state.user?.photoURL as string,
+      author: user?.name as string,
+      authorId: user?.id as string,
+      authorImg: user?.photoURL as string,
       text: values.message,
       createdAt: new Date().toISOString(),
-      isCommentOfMsgId: state.isCommentingMsgId,
+      isCommentOfMsgId: isCommentingMsgId,
       imgUrl,
     };
 
-    addNewMessage(message, dispatch);
-    fetchMessages(dispatch, 100);
-
-    dispatch({ type: REMOVE_MSG_COMMENT });
+    addNewMessage(message);
+    setIsCommentingMsgId('');
   };
   return (
     <SMessageInput>
@@ -84,9 +87,7 @@ function MessageInput() {
             {message ? (
               <>
                 <Comment message={message}>
-                  <CommentBtn
-                    onClick={() => dispatch({ type: REMOVE_MSG_COMMENT })}
-                  >
+                  <CommentBtn onClick={() => setIsCommentingMsgId('')}>
                     <TiDelete size={`3rem`} />
                   </CommentBtn>
                 </Comment>
@@ -112,6 +113,6 @@ function MessageInput() {
       </Formik>
     </SMessageInput>
   );
-}
+};
 
 export default MessageInput;

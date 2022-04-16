@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { IMessage } from '../interfaces';
-import { doc, getDoc, collection } from '@firebase/firestore';
-
 import {
   Author,
   Flex,
@@ -23,11 +21,9 @@ type MessageProps = {
 };
 
 function Message({ message, token, onClick }: MessageProps) {
-  const {
-    message: commentedMsg,
-    loading,
-    error,
-  } = useMsgForComment(message.isCommentOfMsgId as string);
+  const { message: commentedMsg } = useMsgForComment(
+    message.isCommentOfMsgId as string
+  );
 
   return (
     <>

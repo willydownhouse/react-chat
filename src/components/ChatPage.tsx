@@ -1,25 +1,35 @@
-import React, { useCallback, useLayoutEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { useEffect } from 'react';
-
-import { useStateValue } from '../state/context';
-
 import Message from './Message';
-import { fetchMessages, useMessages } from '../utils/messages';
+import { subscribe } from '../utils/messages';
 import MessageInput from './MessageInput';
 import { ChatContainer, ContentWrap, MsgContainer } from '../styles';
-import { COMMENT_MSG } from '../interfaces';
+import { IMessage, IUser } from '../interfaces';
 import SideBar from './SideBar';
-import { collection, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
+
 import { useInView } from 'react-intersection-observer';
 
-function ChatPage() {
+type ChatPageProps = {
+  user: IUser | null;
+};
+
+const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
   const [amountOfMsg, setAmountOfMsg] = useState<number>(15);
   const [isScrolledDown, setIsScrolledDown] = useState<boolean>(false);
-  const { state, dispatch } = useStateValue();
+  const [isCommentingMsgId, setIsCommentingMsgId] = useState<string>('');
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   const scrollRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const { ref, inView } = useInView();
+
+  useEffect(() => {
+    const unsubscribe = subscribe(setMessages);
+
+    return () => {
+      console.log('unsubscribe');
+      unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (!inView) return;
@@ -29,14 +39,14 @@ function ChatPage() {
   }, [inView]);
 
   useEffect(() => {
-    fetchMessages(dispatch, amountOfMsg);
-  }, [amountOfMsg]);
-
-  useEffect(() => {
+    console.log('Fetched messages:');
+    console.log(messages.length);
     const lastChild = scrollRef.current.lastElementChild;
 
+    console.log(lastChild);
+
     lastChild?.scrollIntoView({ behavior: 'smooth' });
-  }, [state.messages]);
+  }, [messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const isBottom =
@@ -45,29 +55,22 @@ function ChatPage() {
 
     if (isBottom) {
       console.log('Is Bottom!');
-      setIsScrolledDown(true);
+      //setIsScrolledDown(true);
     }
   };
 
-  const handleMessageClick = (id: string) => {
-    dispatch({
-      type: COMMENT_MSG,
-      payload: id,
-    });
-  };
-
   const renderMessages = useCallback(() => {
-    return state.messages.map(msg => {
+    return messages.map(msg => {
       return (
         <Message
           key={msg.id}
           message={msg}
-          token={state.user?.token as string}
-          onClick={handleMessageClick}
+          token={user?.token as string}
+          onClick={() => setIsCommentingMsgId(msg.id)}
         />
       );
     });
-  }, [state.messages]);
+  }, [messages]);
 
   return (
     <ContentWrap>
@@ -87,11 +90,15 @@ function ChatPage() {
           {renderMessages()}
         </MsgContainer>
 
-        <MessageInput />
+        <MessageInput
+          isCommentingMsgId={isCommentingMsgId}
+          setIsCommentingMsgId={setIsCommentingMsgId}
+          user={user}
+        />
       </ChatContainer>
       <SideBar />
     </ContentWrap>
   );
-}
+};
 
 export default ChatPage;

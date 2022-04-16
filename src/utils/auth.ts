@@ -79,7 +79,7 @@ export const login = (
     });
 };
 
-export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
+export const checkIfLoggedIn = (setUser: (val: IUser | null) => void) => {
   getAuth().onAuthStateChanged(user => {
     if (!user) return;
 
@@ -95,10 +95,7 @@ export const checkIfLoggedIn = (dispatch: React.Dispatch<IAppAction>) => {
       token: token as string,
     };
 
-    dispatch({
-      type: LOG_IN,
-      payload: currentUser,
-    });
+    setUser(currentUser);
   });
 };
 
