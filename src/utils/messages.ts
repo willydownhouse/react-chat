@@ -14,7 +14,6 @@ import { onSnapshot } from 'firebase/firestore';
 
 export const addNewMessage = async (message: IMessage) => {
   try {
-    console.log(message);
     await setDoc(doc(db, 'messages', message.id), message);
   } catch (err) {
     console.log(err);
@@ -61,11 +60,16 @@ export const useMsgForComment = (id: string) => {
   };
 };
 
-export const subscribe = (setMessages: (val: IMessage[]) => void) => {
+export const subscribe = (
+  setMessages: (val: IMessage[]) => void,
+  setLoading: (val: boolean) => void,
+  amount: number
+) => {
+  setLoading(true);
   const q = query(
     collection(db, 'messages'),
     orderBy('createdAt', 'desc'),
-    limit(25)
+    limit(amount)
   );
 
   return onSnapshot(q, snap => {
@@ -74,5 +78,6 @@ export const subscribe = (setMessages: (val: IMessage[]) => void) => {
       .reverse();
 
     setMessages(data as IMessage[]);
+    setLoading(false);
   });
 };

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const SideBarEl = styled.div`
+export const SideBar = styled.div`
   @media (max-width: 850px) {
     display: none;
   }

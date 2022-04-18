@@ -29,12 +29,14 @@ type MessageInputProps = {
   isCommentingMsgId: string;
   setIsCommentingMsgId: (val: string) => void;
   user: IUser | null;
+  setNewMessage: (val: IMessage | null) => void;
 };
 
 const MessageInput: React.FC<MessageInputProps> = ({
   isCommentingMsgId,
   setIsCommentingMsgId,
   user,
+  setNewMessage,
 }) => {
   const [file, setFile] = useState<File | string>('');
 
@@ -54,27 +56,21 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     addNewMessage(message);
     setIsCommentingMsgId('');
+    setNewMessage(message);
   };
   return (
     <SMessageInput>
       <Formik
         onSubmit={async (values, { resetForm }) => {
-          console.log(values);
-
-          console.log(file);
-
           if (file) {
             const imgUrl = await handleUploadAndGetImgUrl(file as File);
 
-            console.log(imgUrl);
             if (!imgUrl) return;
-            console.log('submits');
             handleSubmit(values, imgUrl as string);
             resetForm();
             setFile('');
             return;
           }
-          console.log('submits');
           handleSubmit(values);
           resetForm();
           setFile('');

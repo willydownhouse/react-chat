@@ -3,59 +3,64 @@ import { useEffect } from 'react';
 import Message from './Message';
 import { subscribe } from '../utils/messages';
 import MessageInput from './MessageInput';
-import { ChatContainer, ContentWrap, MsgContainer } from '../styles';
+import { ChatContainer, ContentWrap, MsgContainer, SideBar } from '../styles';
 import { IMessage, IUser } from '../interfaces';
-import SideBar from './SideBar';
 
 import { useInView } from 'react-intersection-observer';
+import FetchMoreDiv from './FetchMoreDiv';
 
 type ChatPageProps = {
   user: IUser | null;
 };
 
 const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
-  const [amountOfMsg, setAmountOfMsg] = useState<number>(15);
-  const [isScrolledDown, setIsScrolledDown] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [amountOfMsg, setAmountOfMsg] = useState<number>(30);
+  const [startedScrollingDown, setStartedScrollingDown] =
+    useState<boolean>(false);
   const [isCommentingMsgId, setIsCommentingMsgId] = useState<string>('');
   const [messages, setMessages] = useState<IMessage[]>([]);
+  const [newMessage, setNewMessage] = useState<IMessage | null>(null);
 
   const scrollRef = useRef() as React.MutableRefObject<HTMLDivElement>;
+  const numOfRenders = useRef<number>(0);
+
   const { ref, inView } = useInView();
 
   useEffect(() => {
-    const unsubscribe = subscribe(setMessages);
+    const unsubscribe = subscribe(setMessages, setLoading, amountOfMsg);
 
-    return () => {
-      console.log('unsubscribe');
-      unsubscribe();
-    };
-  }, []);
+    return () => unsubscribe();
+  }, [amountOfMsg]);
 
   useEffect(() => {
     if (!inView) return;
-    console.log(`RED LINE is in the view ${inView}`);
-    console.log('lets fetch more!');
-    setAmountOfMsg(amountOfMsg + 5);
+    setAmountOfMsg(amountOfMsg + 10);
   }, [inView]);
 
   useEffect(() => {
+    numOfRenders.current++;
     console.log('Fetched messages:');
     console.log(messages.length);
     const lastChild = scrollRef.current.lastElementChild;
 
-    console.log(lastChild);
+    if (numOfRenders.current === 2) {
+      setTimeout(() => scrollToView(lastChild), 500);
+    }
 
-    lastChild?.scrollIntoView({ behavior: 'smooth' });
+    if (newMessage) {
+      scrollToView(lastChild);
+      setNewMessage(null);
+    }
   }, [messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
-    const isBottom =
-      e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
-      e.currentTarget.clientHeight;
+    // const isBottom =
+    //   e.currentTarget.scrollHeight - e.currentTarget.scrollTop ===
+    //   e.currentTarget.clientHeight;
 
-    if (isBottom) {
-      console.log('Is Bottom!');
-      //setIsScrolledDown(true);
+    if (e.currentTarget.scrollTop > 1000) {
+      setStartedScrollingDown(true);
     }
   };
 
@@ -77,23 +82,20 @@ const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
       <SideBar />
       <ChatContainer>
         <MsgContainer ref={scrollRef} onScroll={handleScroll}>
-          {isScrolledDown ? (
-            <div
-              ref={ref}
-              style={{
-                height: '1rem',
-                backgroundColor: 'red',
-              }}
-            ></div>
-          ) : null}
+          {startedScrollingDown ? <FetchMoreDiv scroll={ref} /> : null}
 
-          {renderMessages()}
+          {loading ? (
+            <div style={{ fontSize: '2rem' }}>Loading ...</div>
+          ) : (
+            renderMessages()
+          )}
         </MsgContainer>
 
         <MessageInput
           isCommentingMsgId={isCommentingMsgId}
           setIsCommentingMsgId={setIsCommentingMsgId}
           user={user}
+          setNewMessage={setNewMessage}
         />
       </ChatContainer>
       <SideBar />
@@ -102,3 +104,11 @@ const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
 };
 
 export default ChatPage;
+
+function scrollToView(el: Element | null) {
+  el?.scrollIntoView({
+    behavior: 'smooth',
+    block: 'end',
+    inline: 'nearest',
+  });
+}
