@@ -63,6 +63,24 @@ export const MsgContainer = styled.div`
   margin-bottom: 1rem;
 
   &::-webkit-scrollbar {
+    width: 1rem;
+  }
+
+  /* Track */
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* Handle */
+  &::-webkit-scrollbar-thumb {
+    background: yellow;
+    border-radius: 5px;
+    background: #777;
+  }
+
+  /* Handle on hover */
+  &::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 
   @media (max-width: 850px) {
@@ -72,5 +90,9 @@ export const MsgContainer = styled.div`
   @media (max-width: 600px) {
     background: transparent;
     padding: 1rem 0;
+
+    &::-webkit-scrollbar {
+      width: 0.5rem;
+    }
   }
 `;

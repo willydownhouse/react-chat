@@ -8,6 +8,7 @@ import { IMessage, IUser } from '../interfaces';
 
 import { useInView } from 'react-intersection-observer';
 import FetchMoreDiv from './FetchMoreDiv';
+import { Spinner } from '../styles/spinner';
 
 type ChatPageProps = {
   user: IUser | null;
@@ -20,7 +21,6 @@ const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
     useState<boolean>(false);
   const [isCommentingMsgId, setIsCommentingMsgId] = useState<string>('');
   const [messages, setMessages] = useState<IMessage[]>([]);
-  const [newMessage, setNewMessage] = useState<IMessage | null>(null);
 
   const scrollRef = useRef() as React.MutableRefObject<HTMLDivElement>;
   const numOfRenders = useRef<number>(0);
@@ -35,23 +35,22 @@ const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
 
   useEffect(() => {
     if (!inView) return;
+
     setAmountOfMsg(amountOfMsg + 10);
   }, [inView]);
 
   useEffect(() => {
     numOfRenders.current++;
-    console.log('Fetched messages:');
-    console.log(messages.length);
     const lastChild = scrollRef.current.lastElementChild;
+
+    if (inView) return;
 
     if (numOfRenders.current === 2) {
       setTimeout(() => scrollToView(lastChild), 500);
+      return;
     }
 
-    if (newMessage) {
-      scrollToView(lastChild);
-      setNewMessage(null);
-    }
+    scrollToView(lastChild);
   }, [messages]);
 
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -84,18 +83,13 @@ const ChatPage: React.FC<ChatPageProps> = ({ user }) => {
         <MsgContainer ref={scrollRef} onScroll={handleScroll}>
           {startedScrollingDown ? <FetchMoreDiv scroll={ref} /> : null}
 
-          {loading ? (
-            <div style={{ fontSize: '2rem' }}>Loading ...</div>
-          ) : (
-            renderMessages()
-          )}
+          {loading ? <Spinner /> : renderMessages()}
         </MsgContainer>
 
         <MessageInput
           isCommentingMsgId={isCommentingMsgId}
           setIsCommentingMsgId={setIsCommentingMsgId}
           user={user}
-          setNewMessage={setNewMessage}
         />
       </ChatContainer>
       <SideBar />

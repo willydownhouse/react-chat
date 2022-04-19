@@ -29,14 +29,12 @@ type MessageInputProps = {
   isCommentingMsgId: string;
   setIsCommentingMsgId: (val: string) => void;
   user: IUser | null;
-  setNewMessage: (val: IMessage | null) => void;
 };
 
 const MessageInput: React.FC<MessageInputProps> = ({
   isCommentingMsgId,
   setIsCommentingMsgId,
   user,
-  setNewMessage,
 }) => {
   const [file, setFile] = useState<File | string>('');
 
@@ -56,7 +54,6 @@ const MessageInput: React.FC<MessageInputProps> = ({
 
     addNewMessage(message);
     setIsCommentingMsgId('');
-    setNewMessage(message);
   };
   return (
     <SMessageInput>

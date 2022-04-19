@@ -12,7 +12,7 @@ const firebaseConfig = {
   authDomain: process.env.REACT_APP_authDomain,
   projectId: process.env.REACT_APP_projectId,
   storageBucket: process.env.REACT_APP_storageBucket,
-  messagingSenderId: process.env.REACT_APP_messagingSenderId,
+  messagingSenderId: process.env.REACT_APP_messaginSenderId,
   appId: process.env.REACT_APP_appId,
   measurementId: process.env.REACT_APP_measurementId,
 };
@@ -22,3 +22,34 @@ const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 
 export const db = getFirestore(app);
+
+// const firebaseConfig = {
+//   apiKey:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_apiKey
+//       : process.env.REACT_APP_PROD_apiKey,
+//   authDomain:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_authDomain
+//       : process.env.REACT_APP_PROD_authDomain,
+//   projectId:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_projectId
+//       : process.env.REACT_APP_PROD_projectId,
+//   storageBucket:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_storageBucket
+//       : process.env.REACT_APP_PROD_storageBucket,
+//   messagingSenderId:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_messaginSenderId
+//       : process.env.REACT_APP_PROD_messaginSenderId,
+//   appId:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_appId
+//       : process.env.REACT_APP_PROD_appId,
+//   measurementId:
+//     process.env.NODE_ENV === 'development'
+//       ? process.env.REACT_APP_measurementId
+//       : process.env.REACT_APP_PROD_measurementId,
+// };
