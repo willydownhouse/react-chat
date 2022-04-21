@@ -23,9 +23,14 @@ export const addNewMessage = async (message: IMessage) => {
 export const modifyDate = (date: string) => {
   const today = new Date().toLocaleDateString();
   const d = new Date(date).toLocaleDateString();
-  const time = new Date(date).toLocaleTimeString().split('');
+  //const time = new Date(date).toLocaleTimeString().split('');
 
-  return `${today === d ? 'today' : d} ${time.slice(0, -6).join('')}`;
+  const time = new Date(date).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return `${today === d ? 'today' : d} ${time}`;
 };
 
 export const useMsgForComment = (id: string) => {
