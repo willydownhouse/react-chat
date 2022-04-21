@@ -19,6 +19,13 @@ app.use(express.static(path.join(__dirname, 'build')));
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
+app.get('/chat', function (req, res) {
+  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+});
+
+app.use('*', (req, res) => {
+  res.send('Page does not exist 404 💥💥💥');
+});
 
 app.listen(PORT, () => console.log(`App listening port ${PORT}`));
 
